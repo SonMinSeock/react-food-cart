@@ -6,13 +6,18 @@ import MealItem from "./MealItem/MealItem";
 const AvaliableMeals = () => {
   const [meals, setMeals] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [httpError, setHttpError] = useState(false);
 
   useEffect(() => {
     // fetching
     const fetchMeals = async () => {
-      const responseData = await (
-        await fetch("https://react-http-cd376-default-rtdb.firebaseio.com/meals.json")
-      ).json();
+      const response = await fetch("https://react-http-cd376-default-rtdb.firebaseio.com/meals.json");
+
+      if (!response.ok) {
+        throw new Error("Something went wrong!");
+      }
+
+      const responseData = await response.json();
 
       const loadedMeals = [];
 
@@ -30,7 +35,10 @@ const AvaliableMeals = () => {
       setIsLoading(false);
     };
 
-    fetchMeals();
+    fetchMeals().catch((error) => {
+      setIsLoading(false);
+      setHttpError(error.message);
+    });
   }, []);
 
   // loading show message
@@ -38,6 +46,15 @@ const AvaliableMeals = () => {
     return (
       <section className={classes.MealsLoading}>
         <p>Loading...</p>
+      </section>
+    );
+  }
+
+  // Http Error Message
+  if (httpError) {
+    return (
+      <section className={classes.MealsError}>
+        <p>{httpError}</p>
       </section>
     );
   }
