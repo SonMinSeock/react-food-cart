@@ -23,6 +23,15 @@ const Cart = (props) => {
     setIsCheckout(true);
   };
 
+  const submitOrderHandler = async (userData) => {
+    await fetch('https://react-http-cd376-default-rtdb.firebaseio.com/orders.json', {
+      method: 'POST',
+      body: JSON.stringify({
+        user: userData,
+        orderedItems: cartCtx.items
+      })
+    });
+  }
   // JSX
   const cartItems = (
     <ul className={classes["cart-items"]}>
@@ -59,7 +68,7 @@ const Cart = (props) => {
         <span>Total Amount</span>
         <span>{cartCtx.totalAmount.toFixed(2)}</span>
       </div>
-      {isCheckout && <Checkout onCancle={props.onClose} />}
+      {isCheckout && <Checkout onConfirm={submitOrderHandler} onCancle={props.onClose} />}
       {!isCheckout && modalActions}
     </Modal>
   );

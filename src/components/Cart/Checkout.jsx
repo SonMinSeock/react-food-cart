@@ -45,9 +45,15 @@ const Checkout = (props) => {
     const formIsValid = enteredNameIsValid && enteredPostalIsValid && enteredStreetIsValid && enteredCityIsValid;
 
     if (!formIsValid) {
-      // print error
+      return;
     }
     // submit the cart data...
+    props.onConfirm({
+      name: enteredName,
+      street: enteredStreet,
+      postal: enteredPostal,
+      city: enteredCity
+    });
   };
 
   const nameControlClasses = `${classess.control} ${formInputsValidity.name ? '' : classess.invalid}`;
